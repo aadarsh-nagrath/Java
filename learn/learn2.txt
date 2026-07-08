@@ -517,5 +517,355 @@ class Dog extends Animal {
 }
 
 ---------------------------------------------------------------------------
+Great. Next: final.
+
+This keyword has 3 different meanings depending on where it's used.
+
+1. final variable
+final int age = 25;
+age = 30;   // ❌
+
+Once assigned, it cannot be reassigned.
+
+2. final method
+class Animal {
+    final void eat() {}
+}
+
+class Dog extends Animal {
+    void eat() {}   // ❌
+}
+
+A final method cannot be overridden.
+
+3. final class
+final class Animal {}
+
+class Dog extends Animal {}   // ❌
+
+A final class cannot be extended.
+
+Example: String in Java is final.
+
+⚠️ Interview trap
+final Car c = new Car();
+
+Can we do:
+
+c = new Car();
+
+❌ No.
+
+Can we do:
+
+c.brand = "BMW";
+
+✅ Yes.
+
+Why?
+
+Because final makes the reference variable immutable, not the object.
+
+Think:
+
+final c  ─────► Car Object
+
+You cannot make c point somewhere else, but you can still modify the object it points to (unless the object's fields are also immutable).
+
+---------------------------------------------------------------------------
+
+Why is String final?
+
+Not exactly.
+
+String isn't final because it's a data type. It's final because Java wants strings to be immutable and safe.
+
+If inheritance were allowed:
+
+class MyString extends String {
+    // imagine changing behavior...
+}
+
+someone could change how strings behave, breaking assumptions across the JVM.
+
+Benefits of String being immutable/final include:
+
+Security (file paths, URLs, passwords, class names can't be altered unexpectedly)
+Thread safety
+String Pool optimization
+Reliable hashCode() (important for HashMap)
+
+You don't need to memorize all of these now. Just remember:
+
+String is final so its behavior cannot be changed through inheritance, helping keep strings immutable and safe.
+
+
+---------------------------------------------------------------------------
+nt a = 10;
+int b = 0;
+
+System.out.println(a / b);
+✅ Correct. C. Runtime exception.
+
+More precisely:
+
+ArithmeticException: / by zero
+
+Java throws an exception at runtime because the operation is illegal.
+
+What is an Exception?
+
+An exception is an object that represents an error occurring during program execution.
+
+Think of it as:
+
+Program running
+      │
+      ▼
+Something unexpected happens
+      │
+      ▼
+Java creates an Exception object
+      │
+      ▼
+Either you handle it or the program terminates
+
+
+And your explanation is interview-worthy:
+
+finally executes regardless of whether an exception occurs or is caught.
+
+One small caveat: there are rare cases (e.g., System.exit() or JVM crash) where finally won't execute, but ignore those for now.
+
+try {
+    System.out.println("A");
+} catch (Exception e) {
+    System.out.println("B");
+} finally {
+    System.out.println("C");
+}
+
+
+---------------------------------------------------------------------------
+throws
+
+You declare that a method may throw an exception.
+
+void readFile() throws IOException {
+    ...
+}
+
+Think: "I'm warning the caller that this method might throw an IOException."
+
+The caller must then decide whether to handle it or propagate it.
+
+Easy way to remember
+throw → inside a method, throws one exception object.
+throws → in the method signature, declares possible exceptions.
+
+First, one correction:
+
+throw new IOException();
+
+❌ This is not a custom exception.
+
+IOException is a built-in Java exception.
+
+A custom exception would be something you create:
+
+class InvalidAgeException extends Exception {
+}
+
+Then:
+
+throw new InvalidAgeException();
+Why do we need throws?
+
+Suppose you write:
+
+void readFile() throws IOException {
+    // code that may fail while reading a file
+}
+
+You're telling Java:
+
+"This method might throw an IOException. I'm not handling it here."
+
+Now another method calls it:
+
+void process() {
+    readFile();
+}
+
+Java says:
+
+❌ "Hold on. readFile() might throw an IOException. What are you going to do if that happens?"
+
+So you have two choices.
+
+Option 1: Handle it
+void process() {
+    try {
+        readFile();
+    } catch (IOException e) {
+        System.out.println(e.getMessage());
+    }
+}
+Option 2: Pass the responsibility
+void process() throws IOException {
+    readFile();
+}
+
+Now process() is also telling its caller:
+
+"I don't handle it either. You deal with it."
+
+The responsibility keeps moving up until someone catches it.
+
+Should every method have throws?
+
+❌ No.
+
+Only methods that can throw checked exceptions and choose not to handle them.
+
+If your method can handle the exception itself, use try-catch and don't declare throws.
+
+Mental model
+
+Think of throws as forwarding a package.
+
+readFile() ──► process() ──► main()
+
+       IOException
+
+Each method can either:
+
+📦 Open the package (try-catch), or
+📦 Pass it to the next person (throws).
+
+---------------------------------------------------------------------------
+
+Checked vs Unchecked Exceptions.
+
+This is asked in almost every Java interview.
+
+1. Checked Exceptions
+
+The compiler forces you to handle them.
+
+Example:
+
+IOException
+SQLException
+
+If a method throws one of these:
+
+void readFile() throws IOException
+
+then the caller must either:
+
+use try-catch, or
+declare throws IOException.
+
+Otherwise, it won't compile.
+
+2. Unchecked Exceptions
+
+The compiler does not force you to handle them.
+
+Examples:
+
+ArithmeticException
+NullPointerException
+IndexOutOfBoundsException
+IllegalArgumentException
+
+You can catch them, but you don't have to.
+
+Example:
+
+int x = 10 / 0;
+
+This compiles fine, but at runtime:
+
+ArithmeticException
+Easy way to remember
+Checked	Unchecked
+Compiler checks	Compiler doesn't check
+Must handle or declare	Optional to handle
+Usually external failures (files, DB, network)	Usually programming bugs
+
+---------------------------------------------------------------------------
+Compile time vs Runtime
+Compile time
+
+This happens when Java converts:
+
+.java  →  .class
+
+using:
+
+javac Main.java
+
+The compiler checks things like:
+
+Syntax errors
+Type errors
+Missing methods
+Access modifier violations
+Checked exceptions not handled
+
+Example:
+
+int x = "hello";
+
+❌ Compile error.
+
+Program never runs.
+
+Runtime
+
+This happens when you execute:
+
+java Main
+
+The JVM is running your program.
+
+Errors that happen now:
+
+int x = 10 / 0;
+
+Compiles ✅
+
+Runs ❌
+
+ArithmeticException
+Should we handle both?
+
+No. They are different categories.
+
+You don't "handle" compile errors.
+
+You fix them.
+
+Example:
+
+String name = 100;
+
+You don't catch this with try-catch.
+
+You correct the code.
+
+Runtime exceptions can be handled:
+
+try {
+    int x = 10 / 0;
+}
+catch (ArithmeticException e) {
+    System.out.println("Invalid division");
+}
+Interview summary:
+
+Compile-time errors are detected by the compiler before execution. Runtime errors occur while the program is running and may be handled using exception handling.
 
 
