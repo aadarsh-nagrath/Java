@@ -1,0 +1,849 @@
+Important Java collection hierarchy
+
+Remember this:
+
+             Collection
+                 |
+      ----------------------
+      |                    |
+     List                 Set
+
+                 Map (separate)
+
+Map is not a Collection.
+
+1. Users where duplicate emails are not allowed
+
+Your answer: Set / Map
+
+✅ Both are valid depending on the requirement.
+
+If you only care about uniqueness:
+
+Set<String> emails = new HashSet<>();
+
+Example:
+
+a@test.com
+b@test.com
+
+No duplicates.
+
+But in a real backend, you usually need:
+
+email → User
+
+So:
+
+Map<String, User> users = new HashMap<>();
+
+is better.
+
+Because:
+
+"a@test.com" → User object
+
+You can find the user instantly.
+
+So backend answer: Map.
+
+2. Order history where duplicates are allowed and order matters
+
+Your answer: Stack ❌
+
+Why?
+
+A stack means:
+
+Last In First Out (LIFO)
+
+A
+B
+C
+
+pop()
+
+C
+
+Order history usually needs:
+
+Order 1
+Order 2
+Order 3
+
+You want to see history in insertion order.
+
+Use:
+
+List<Order> orders = new ArrayList<>();
+
+Because:
+
+duplicates allowed ✅
+order preserved ✅
+index access ✅
+3. Leaderboard
+
+Your answer: List
+
+Depends.
+
+Simple leaderboard:
+
+List<Player> players;
+
+then sort.
+
+But if you need:
+
+always sorted
+fast ranking updates
+
+you might use:
+
+TreeSet
+PriorityQueue
+
+
+---------------------------------------------------------------------------
+
+One more subtle point:
+
+For ArrayList:
+
+list.add(value);
+
+at the end:
+
+Usually:
+
+[1][2][3][4][ ]
+              ↑
+          add here
+
+No shifting → O(1)
+
+But sometimes:
+
+[1][2][3][4][5]
+
+array full.
+
+Java creates a bigger array:
+
+old array → new bigger array
+copy everything
+add new item
+
+That single operation is O(n).
+
+But averaged over many adds:
+
+amortized O(1).
+
+
+Now your O(n) question 👇
+
+You said:
+
+Adding in middle should be n/2 because only half the elements shift.
+
+Good observation. In Big-O, we drop constants.
+
+Example:
+
+n = 100
+
+Middle insertion:
+50 elements shift
+
+Technically:
+
+O(n/2)
+
+But Big-O ignores the constant:
+
+O(n/2)=O(n)
+
+Why?
+
+Because as n grows:
+
+n = 1000  → 500 moves
+n = 1,000,000 → 500,000 moves
+
+The growth pattern is still linear.
+
+Example:
+
+O(2n)
+O(n)
+O(n/2)
+
+All are called:
+
+O(n)
+
+because they grow linearly.
+---------------------------------------------------------------------------
+
+Insert in middle
+
+Suppose:
+
+ArrayList
+[10][20][30][40]
+
+Insert 25 at index 2.
+
+ArrayList must shift:
+
+Before:
+[10][20][30][40]
+
+Move:
+      30 → right
+      40 → right
+
+After:
+[10][20][25][30][40]
+
+It has to move elements.
+
+Time: O(n)
+
+LinkedList
+
+Before:
+
+10 → 20 → 30 → 40
+
+Insert 25 after 20.
+
+You create a new node:
+
+25
+
+Change pointers:
+
+Before:
+
+20 → 30
+
+After:
+
+20 → 25 → 30
+
+Only pointer changes.
+
+Time: O(1)
+
+BUT important interview correction:
+
+Finding the middle position in LinkedList is slow.
+
+Example:
+
+list.add(50000, value);
+
+LinkedList has to walk:
+
+head → node1 → node2 → ... → node50000
+
+That is O(n).
+
+So the full operation is:
+
+Find location: O(n)
+Insert: O(1)
+
+Total: O(n)
+
+Whereas if you already have the node reference:
+
+Insert: O(1)
+
+---------------------------------------------------------------------------
+A HashMap is basically a hash table.
+
+Question:
+
+If I have:
+
+Map<String, User> users = new HashMap<>();
+
+users.put("aadarsh@gmail.com", user);
+
+Why do you think:
+
+users.get("aadarsh@gmail.com");
+
+is usually O(1)?
+
+What magic is happening internally? (Your intuition)
+
+it's definately O(1) as they are stored in key value pairs, internally how ever i might assume you know like we have linked list which has a value and a pointer i think map has key, and that key node points to value node something like that, i dont really know what data structure it might use internally, but the key var has the memory address to vlaue definately 
+
+Good intuition. You're close, but one important correction.
+
+"key has the memory address to value"
+
+❌ Not exactly.
+
+A HashMap does not store the key as a pointer directly to the value.
+
+The magic is hashing.
+
+Imagine:
+
+users.put("aadarsh@gmail.com", user);
+
+Internally something like this happens:
+
+Step 1: Hash the key
+
+Java takes:
+
+"aadarsh@gmail.com"
+
+and calculates a number:
+
+hashCode()
+        ↓
+123456
+Step 2: Find a bucket
+
+HashMap has an internal array:
+
+Bucket array
+
+0
+1
+2
+3
+4
+5
+6
+7
+...
+
+It calculates:
+
+123456 % array_size
+
+Suppose:
+
+bucket = 5
+
+Now it stores:
+
+Bucket[5]
+
+Key: "aadarsh@gmail.com"
+Value: User object
+
+So lookup:
+
+users.get("aadarsh@gmail.com")
+
+does:
+
+key
+ |
+hash
+ |
+bucket index
+ |
+directly jump there
+ |
+get value
+
+That's why average:
+
+O(1)
+
+Where your linked list idea comes in:
+
+Inside a bucket, collisions can happen:
+
+Example:
+
+Bucket[5]
+
+(key1,value1)
+   |
+(key2,value2)
+   |
+(key3,value3)
+
+Historically this was a LinkedList.
+
+Modern Java (Java 8+) can convert a long collision chain into a balanced tree.
+
+So mental model:
+
+HashMap
+
+Array
+ |
+ |-- Bucket 0
+ |-- Bucket 1
+ |-- Bucket 2
+       |
+       └── key-value entries
+
+One interview question:
+
+If HashMap is O(1), why isn't everything stored in a HashMap?
+
+Why do we still need ArrayList?
+
+(Think about ordering, indexing, memory, etc.)
+
+Why not use HashMap everywhere?
+
+ArrayList gives you:
+list.get(0);
+list.get(1);
+list.get(2);
+
+It is ordered and index-based.
+
+Example:
+
+Orders:
+
+0 → Order A
+1 → Order B
+2 → Order C
+
+You care about sequence.
+
+HashMap gives you:
+
+userId → User
+
+You care about lookup.
+
+Example:
+
+users.get(12345);
+
+You don't care where it is stored internally.
+
+Other differences:
+
+	ArrayList	HashMap
+Access by index	✅	❌
+Key lookup	❌	✅
+Maintains order	✅	depends on implementation
+Allows duplicates	✅	keys ❌
+Memory	Less	More
+
+
+This:
+
+hashCode()
+   ↓
+123456
+
+123456 % array_size
+   ↓
+bucket 5
+
+is just a way to decide where to put it.
+
+But different keys can produce the same bucket.
+
+Example:
+
+Imagine array size = 10.
+
+"aadarsh"
+hashCode = 12345
+
+12345 % 10 = 5
+
+and:
+
+"john"
+hashCode = 67895
+
+67895 % 10 = 5
+
+Both go to:
+
+Bucket[5]
+
+That is a collision.
+
+So Java stores both:
+
+Bucket[5]
+
+("aadarsh", User1)
+        |
+("john", User2)
+
+Then when you search:
+
+map.get("john")
+
+Java:
+
+Calculates hash of "john"
+Goes to bucket 5
+Compares keys using equals()
+Finds "john"
+
+One important interview point:
+
+HashMap speed depends on two things:
+
+hashCode()
++
+equals()
+
+hashCode() finds the bucket.
+
+equals() confirms the exact key.
+
+
+Now collision resolution
+
+Suppose:
+
+map.put("A", 100);
+map.put("B", 200);
+
+Assume both go to bucket 3:
+
+Bucket[3]
+
+Java cannot overwrite because keys are different.
+
+So it stores multiple entries there:
+
+Bucket[3]
+
+[A,100] → [B,200]
+
+Historically:
+
+Bucket
+  |
+  Node
+  |
+  Node
+  |
+  Node
+
+This was a linked list.
+
+Now lookup:
+
+map.get("B")
+
+Java does:
+
+1. Hash the key
+"B"
+ ↓
+hashCode()
+ ↓
+bucket 3
+2. Go to bucket 3
+
+It finds:
+
+[A,100]
+[B,200]
+3. Compare keys
+
+It checks:
+
+"A".equals("B")
+
+false
+
+then:
+
+"B".equals("B")
+
+true ✅
+
+Returns:
+
+200
+Java 8 improvement
+
+If too many collisions happen in one bucket:
+
+Old:
+
+A → B → C → D → E
+
+Linked list lookup:
+
+O(n)
+
+Java converts it into a balanced tree:
+
+       C
+     /   \
+    A     E
+
+Lookup becomes:
+
+O(log n)
+Important interview line:
+
+HashMap achieves average O(1) lookup by using hashing to locate buckets, and resolves collisions using linked lists or balanced trees internally.
+
+---------------------------------------------------------------------------
+🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴
+One more thing I want to test because this connects to your earlier "memory address" idea:
+
+Suppose:
+
+class User {
+    String name;
+}
+
+HashMap<User, Integer> map = new HashMap<>();
+
+User u1 = new User();
+u1.name = "Aadarsh";
+
+map.put(u1, 100);
+
+Later:
+
+User u2 = new User();
+u2.name = "Aadarsh";
+
+map.get(u2);
+
+Do you expect it to return 100 or null?
+
+Think about hashCode() and equals(). (This is a very common backend bug.)
+
+excellant question so my logic says see map keys cannot be duplicates, but here we are adding u1 or u2 in map key both are separate objects i think, even though both objects have same property [smae name]
+i think it will give null  
+but if it were HashMap<String, Integer> map = new HashMap<>();
+and map.put(u1.name, 100); were to be added, then map.get(u2.name); i think would have given 100 
+
+🔥 Excellent. Your reasoning is almost exactly right. This is the kind of thinking that helps with Java internals.
+
+Your answer:
+
+u2 is a different object even though name is same → probably null
+
+✅ Correct with the default Object behavior.
+
+Let's see why.
+
+Case 1: Object as key
+class User {
+    String name;
+}
+
+User u1 = new User();
+u1.name = "Aadarsh";
+
+User u2 = new User();
+u2.name = "Aadarsh";
+
+map.put(u1, 100);
+
+map.get(u2);
+
+By default, Java uses:
+
+u1.hashCode()
+u2.hashCode()
+
+and:
+
+u1.equals(u2)
+
+Default behavior from Object:
+
+u1.equals(u2)
+
+means:
+
+"Are these the exact same object in memory?"
+
+Here:
+
+u1 ───► User Object 1
+u2 ───► User Object 2
+
+Different objects.
+
+So:
+
+u1.equals(u2)
+
+is:
+
+false
+
+Result:
+
+null
+
+✅ Your answer.
+
+Case 2: String as key
+
+Your second example:
+
+map.put(u1.name, 100);
+
+map.get(u2.name);
+
+Now:
+
+u1.name
+
+is:
+
+"Aadarsh"
+
+and:
+
+u2.name
+
+is also:
+
+"Aadarsh"
+
+String overrides:
+
+equals()
+hashCode()
+
+so:
+
+"Aadarsh".equals("Aadarsh")
+
+is:
+
+true
+
+Result:
+
+100
+
+✅ Correct.
+
+This is why backend developers override equals/hashCode
+
+Example:
+
+class User {
+
+    String email;
+
+    @Override
+    public boolean equals(Object obj) {
+        User other = (User)obj;
+        return this.email.equals(other.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return email.hashCode();
+    }
+}
+
+Now:
+
+u1.email = "a@test.com";
+u2.email = "a@test.com";
+
+will behave like the same key.
+
+Very important interview rule:
+
+If you override equals(), you must override hashCode().
+
+Because HashMap does:
+
+hashCode() → find bucket
+equals() → find exact key
+
+If they disagree, HashMap breaks.
+
+Short version:
+
+By default, Java compares objects by reference.
+
+User u1 = new User("a@test.com");
+User u2 = new User("a@test.com");
+
+u1.equals(u2); // false by default
+
+Even though data is same, they are different objects.
+
+In backend, we usually care about business equality.
+
+Example:
+
+User 1:
+id = 101
+email = a@test.com
+
+User 2:
+id = 101
+email = a@test.com
+
+Logically, they are the same user.
+
+So we override:
+
+equals()
+
+to define:
+
+"When should two objects be considered the same?"
+
+and:
+
+hashCode()
+
+to define:
+
+"Where should this object go inside HashMap/HashSet?"
+
+Example:
+
+Without override:
+
+Set<User> users = new HashSet<>();
+
+users.add(u1);
+users.add(u2);
+
+You get:
+
+2 users
+
+because Java thinks they are different objects.
+
+With equals() + hashCode():
+
+1 user
+
+because Java understands they are logically the same.
+
+Backend example:
+
+Avoid duplicate users in a Set
+Use User as a HashMap key
+Compare database entities
+
+---------------------------------------------------------------------------
+
