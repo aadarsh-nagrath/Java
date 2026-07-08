@@ -1,0 +1,80 @@
+Next: Generics.
+
+You've already been using them:
+
+List<String> names = new ArrayList<>();
+
+Map<String, User> users = new HashMap<>();
+
+The <String> and <User> are generics.
+
+Problem without generics:
+
+ArrayList list = new ArrayList();
+
+list.add("Aadarsh");
+list.add(100);
+
+String name = (String) list.get(1); // 💥 Runtime error
+
+Because the list can store anything.
+
+With generics:
+
+ArrayList<String> list = new ArrayList<>();
+
+list.add("Aadarsh");
+list.add(100); // ❌ Compile error
+
+Now Java protects you earlier.
+
+One small thing:
+
+Generics work with objects, not primitives.
+
+This is invalid:
+
+List<int> nums;   // ❌
+
+Because int is primitive.
+
+Use wrapper classes:
+
+List<Integer> nums;  // ✅
+
+Java automatically converts:
+
+int x = 10;
+list.add(x);
+
+to:
+
+Integer.valueOf(10);
+
+This is called autoboxing.
+
+
+A small deeper point:
+
+These are different:
+
+int a = 10;
+
+Primitive stored directly.
+
+Integer b = 10;
+
+Object created (autoboxing).
+
+Java converts:
+
+Integer b = 10;
+
+into something like:
+
+Integer b = Integer.valueOf(10);
+
+One important interview point:
+Generics give compile-time type safety.
+---------------------------------------------------------------------------
+
