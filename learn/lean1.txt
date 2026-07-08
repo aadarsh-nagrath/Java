@@ -1,0 +1,406 @@
+Packages, Classes, Objects
+
+Think of it like folders.
+
+com.example.app      ← package
+    ├── Car.java     ← class
+    ├── User.java    ← class
+    └── Main.java    ← class
+
+Objects are created at runtime from classes.
+
+Package
+   ↓
+Classes
+   ↓
+Objects (created when program runs)
+
+Objects are not inside the class. The class is just code. Objects live in memory while the program runs.
+
+
+String[] args
+
+When you run
+
+java Main hello world 123
+
+The JVM calls:
+
+main(new String[]{"hello", "world", "123"});
+
+So inside main:
+
+args[0] = "hello"
+args[1] = "world"
+args[2] = "123"
+
+That's all it is. The JVM passes command-line arguments as a String[].
+
+@SpringBootApplication
+
+This is called an annotation.
+
+Annotations are metadata that tell frameworks something. @SpringBootApplication -> "This is the main Spring Boot application. Start scanning for components, configure defaults, and boot the application."
+
+This line:
+
+Car c1 = new Car();
+
+creates one object in memory.
+
+
+
+This:
+
+new Car()
+
+calls the constructor.
+
+The default constructor is being called because you didn't define one.
+
+Yes. There are a few types of variables. Don't memorize them yet—just understand them.
+
+1. Instance Variable (Field)
+
+Belongs to each object.
+
+class Car {
+    String brand;   // Instance variable
+}
+Car c1 = new Car();
+Car c2 = new Car();
+
+c1.brand = "BMW";
+c2.brand = "Audi";
+
+Each object has its own copy of brand.
+
+2. Local Variable
+
+Declared inside a method or constructor.
+
+Car(String brand) {   // <-- brand is a local variable (parameter)
+    this.brand = brand;
+}
+
+or
+
+void start() {
+    int speed = 100;   // Local variable
+}
+
+Local variables exist only while that method/constructor is executing.
+
+3. Static Variable (Class Variable)
+
+Shared by all objects.
+
+class Car {
+    static int count = 0;
+}
+
+There's only one count, no matter how many Car objects you create.
+
+We'll cover static in more detail later.
+
+Now this.brand = brand
+class Car {
+    String brand;          // Instance variable
+
+    Car(String brand) {    // Local variable (parameter)
+        this.brand = brand;
+    }
+}
+this.brand → the object's field.
+brand → the constructor parameter.
+
+So you're copying the parameter into the object's field.
+
+Quick quiz
+class Car {
+    String brand;
+
+    Car(String b) {
+        brand = b;
+    }
+}
+
+Is this required here?
+
+A. Yes
+
+B. No
+
+✅ Classes
+✅ Objects
+✅ Reference variables
+✅ new
+✅ Constructors
+✅ Difference between constructor and method
+
+Awesome. Next: Access Modifiers. This is heavily used in Java and Spring.
+
+There are 4:
+
+Modifier	Accessible from
+public	Everywhere
+protected	Same package + subclasses + It includes other classes in the same package too.
+(default)	Same package only
+private	Same class only
+
+
+Where can access modifiers be used?
+Thing	public	protected	default	private
+Top-level class	✅	❌	✅	❌
+Field	✅	✅	✅	✅
+Method	✅	✅	✅	✅
+Constructor	✅	✅	✅	✅
+Object (User u = ...)	❌	❌	❌	❌
+
+Objects do not have access modifiers. Variables like User u don't either.
+
+
+
+private
+
+Correct.
+
+private means only code inside that class can access it.
+
+That includes:
+
+❌ Other classes in the same package
+❌ Subclasses
+❌ Any other class anywhere
+
+
+Can a constructor and a method have the same name?
+
+Yes.
+
+class User {
+    User() {}          // Constructor
+    void User() {}     // Method
+}
+
+This is valid Java, although it's considered bad practice because it's confusing.
+
+The compiler distinguishes them because:
+
+Constructor → no return type
+Method → has a return type (void here)
+
+
+
+------------------------------------------------------------------------------------------
+
+wait i have a Question so say we have -
+
+class Animal {
+    void speak() {
+        System.out.println("Animal sound");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void speak() {
+        System.out.println("Bark");
+    }
+ void wiggletail() {}
+}
+
+
+and we create Animal a = new Dog(); somewhere 
+so a.speak() will be Bark right ? but  a.wiggletail() is not possibel cuz that is not in Animal  and a is reference Animal ?
+
+🎯 YES. Exactly.
+
+You just understood one of the most important concepts in Java.
+
+class Animal {
+    void speak() {
+        System.out.println("Animal sound");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void speak() {
+        System.out.println("Bark");
+    }
+
+    void wiggleTail() {}
+}
+
+Animal a = new Dog();
+
+Now:
+
+a.speak();
+
+✅ Compiles because Animal has speak().
+
+At runtime it prints:
+
+Bark
+
+because the actual object is a Dog.
+
+a.wiggleTail();
+
+❌ Compile error.
+
+Why?
+
+The compiler checks:
+
+"Does Animal have a method called wiggleTail()?"
+
+No.
+
+So it refuses to compile.
+
+Mental model
+
+The reference type decides:
+
+"What methods am I allowed to call?"
+
+The object type decides:
+
+"Which implementation of that method actually runs?"
+
+This one sentence is worth remembering.
+
+
+---------------------------------------------------------------------------
+
+What does @Override do?
+
+It tells the compiler:
+
+"I intend to override a parent method."
+
+If you accidentally make a mistake:
+
+class Dog extends Animal {
+    @Override
+    void speek() { }   // typo
+}
+
+The compiler immediately errors because there is no speek() in Animal to override.
+
+Without @Override, this typo would silently create a new method—harder to catch.
+
+
+---------------------------------------------------------------------------
+
+
+Quick quiz
+
+What prints?
+
+class Animal {
+    void speak() {
+        System.out.println("Animal");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void speak() {
+        System.out.println("Dog");
+    }
+}
+
+Animal a = new Dog();
+Dog d = new Dog();
+
+a.speak();
+d.speak();
+
+Just the output.
+
+a.speak() ->  Dog
+d.speak() -> Dog
+
+✅ Correct.
+
+Output:
+
+Dog
+Dog
+
+---------------------------------------------------------------------------
+
+One slightly trickier one
+class Animal {
+    void speak() {
+        System.out.println("Animal");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void speak() {
+        System.out.println("Dog");
+    }
+
+    void wagTail() {
+        System.out.println("Wagging");
+    }
+}
+
+Animal a = new Dog();
+
+What happens?
+
+((Dog) a).wagTail();
+
+A. Compile error
+
+B. Runtime error
+
+C. Prints Wagging
+
+This introduces casting, which builds directly on what you already learned.
+
+here a is reference to animal but object is dog, 
+here if it was a.wagTail(); then it would not have compiled as there is no wagTail() in animal, but speak would have work [overiding method in animal class by dog class thats why]
+but since it is 
+((Dog) a).wagTail(); it down cast animal to dog so answer will be "Wagging"
+
+🎯 100% correct.
+
+That's exactly how I'd expect a mid-level Java developer to reason.
+
+Your explanation:
+
+a.wagTail() won't compile because the reference type is Animal.
+
+✅ Correct.
+
+((Dog) a) downcasts the reference to Dog.
+
+✅ Correct.
+
+Since the object is actually a Dog, it prints Wagging.
+
+✅ Correct.
+
+One small addition:
+
+If we had:
+
+Animal a = new Animal();
+((Dog) a).wagTail();
+
+It compiles, but at runtime you'll get:
+
+ClassCastException
+
+because the object is not a Dog.
+
+---------------------------------------------------------------------------
+
