@@ -1,0 +1,521 @@
+Perfect. Interfaces are one of the most important Java concepts for backend development.
+
+Forget syntax for a minute.
+
+Why do interfaces exist?
+
+Suppose you build a payment system.
+
+Today:
+
+Stripe
+
+Tomorrow:
+
+Stripe
+Razorpay
+PayPal
+
+You don't want the rest of your code to care which payment provider is being used.
+
+So you define a contract.
+
+interface PaymentService {
+    void pay();
+}
+
+This says:
+
+"Anyone who claims to be a PaymentService must implement pay()."
+
+No implementation yet.
+
+Implementation
+class StripePaymentService implements PaymentService {
+
+    @Override
+    public void pay() {
+        System.out.println("Paying via Stripe");
+    }
+}
+
+Another implementation:
+
+class RazorpayPaymentService implements PaymentService {
+
+    @Override
+    public void pay() {
+        System.out.println("Paying via Razorpay");
+    }
+}
+
+Notice:
+
+extends → inherit from a class.
+implements → implement an interface.
+Usage
+PaymentService payment = new StripePaymentService();
+
+payment.pay();
+
+This should remind you of:
+
+Animal a = new Dog();
+
+Same idea.
+
+Reference type = PaymentService
+Object type = StripePaymentService
+
+---------------------------------------------------------------------------
+
+Loose Coupling
+
+This is a very common interview topic.
+
+Tight coupling ❌
+StripePaymentService payment = new StripePaymentService();
+
+Your code now depends directly on Stripe.
+
+If tomorrow you want Razorpay, you have to change all places where StripePaymentService is used.
+
+Loose coupling ✅
+PaymentService payment = new StripePaymentService();
+
+Your code depends only on the interface.
+
+Tomorrow you can do:
+
+PaymentService payment = new RazorpayPaymentService();
+
+The rest of your code doesn't change because it only knows:
+
+payment.pay();
+
+not how payment is implemented.
+
+
+---------------------------------------------------------------------------
+ok i got it so if interface A has a method anyhting implementing it should also have that method .
+
+
+but if it were a class that is not mandatory 
+
+✅ Exactly.
+
+Now your second question:
+
+If it were a class, is that mandatory?
+
+No.
+
+Example:
+
+class Animal {
+    void eat() {
+        System.out.println("Eating");
+    }
+}
+
+class Dog extends Animal {
+
+}
+
+This compiles.
+
+Why?
+
+Because Dog inherits eat() from Animal.
+
+It doesn't have to write it again.
+
+If Dog wants different behavior, it can override it.
+
+class Dog extends Animal {
+    @Override
+    void eat() {
+        System.out.println("Dog eating");
+    }
+}
+Biggest difference
+
+Class (extends)
+
+Gets implementation from parent.
+Can override if needed.
+
+Interface (implements)
+
+Gets only the contract.
+Must provide the implementation (unless the class is abstract).
+Interview one-liner
+
+A class provides implementation + state, whereas an interface primarily defines a contract that implementing classes must follow.
+
+This distinction is fundamental in Java and comes up frequently in interviews.
+
+
+---------------------------------------------------------------------------
+
+
+Interface extending another interface
+interface Animal {
+    void eat();
+}
+
+interface Pet extends Animal {
+    void play();
+}
+
+Now any class implementing Pet must implement both methods.
+
+class Dog implements Pet {
+
+    @Override
+    public void eat() {
+        System.out.println("Eating");
+    }
+
+    @Override
+    public void play() {
+        System.out.println("Playing");
+    }
+}
+
+Think of it like:
+
+Animal
+   ↑
+ Pet
+
+Dog implements Pet
+
+Since Pet extends Animal, Dog indirectly agrees to both contracts.
+
+The difference is what Animal is:
+
+class Animal → inheritance (extends)
+interface Animal → implementation (implements)
+Your intuition question
+
+Why not extends an interface?
+
+Because an interface is not a class. It has no object state to inherit from.
+
+Classes extend classes.
+Classes implement interfaces.
+Interfaces can extend other interfaces.
+
+
+
+---------------------------------------------------------------------------
+
+Which of these are valid?
+
+interface A {}
+interface B {}
+
+1 class C implements A {}
+2 class C implements A, B {}
+3 class C extends A {}
+4 interface C extends A, B {}
+
+Your quiz
+
+You answered 1, 2.
+
+Correct answer is:
+
+✅ 1, 2, and 4
+
+4 is valid because interfaces can extend multiple interfaces:
+
+interface A {}
+interface B {}
+
+interface C extends A, B {}
+
+This is one of Java's design choices:
+
+❌ A class cannot extend multiple classes.
+✅ An interface can extend multiple interfaces.
+✅ A class can implement multiple interfaces.
+
+-------------------------------------------------------------------
+Current level
+
+You've got a solid grasp of:
+
+✅ Classes
+✅ Objects
+✅ References
+✅ Constructors
+✅ this
+✅ Access modifiers (basics)
+✅ Inheritance
+✅ Upcasting & Downcasting
+✅ Method overriding
+✅ Interfaces
+✅ extends vs implements
+
+This is roughly the point where many Java learners start feeling comfortable reading real code.
+
+Next roadmap (in order)
+Abstract classes ⭐ (20 min)
+super keyword
+final
+Exception Handling (try-catch, throws)
+Collections (List, Set, Map) ← heavily used in backend
+Generics
+Lambda expressions
+Streams API
+JVM memory (Heap, Stack, GC)
+Multithreading
+Spring Boot
+
+
+---------------------------------------------------------------------------
+
+Abstract Class
+
+Think of it as something between a class and an interface.
+
+Example:
+
+abstract class Animal {
+
+    void eat() {
+        System.out.println("Eating");
+    }
+
+    abstract void speak();
+}
+
+Notice two things:
+
+void eat() {}
+
+✅ Has implementation.
+
+abstract void speak();
+
+❌ No implementation.
+
+An abstract class can have both.
+
+Now:
+
+class Dog extends Animal {
+
+    @Override
+    void speak() {
+        System.out.println("Bark");
+    }
+}
+
+Dog must implement speak() because it's abstract.
+
+But it inherits eat() automatically.
+
+Can we do this?
+Animal a = new Animal();
+
+❌ No.
+
+Why?
+
+Because an abstract class is incomplete.
+
+It's like saying:
+
+"There will be different kinds of Animals, but I don't know how every Animal speaks."
+
+So Java doesn't let you create an object of it.
+
+Mental model
+Class	Abstract Class	Interface
+Complete implementation	Partial implementation	Contract
+Can create object	❌ Cannot create object	❌ Cannot create object
+Interview rule (don't memorize, understand)
+
+Use an abstract class when subclasses share common state or behavior.
+
+Example:
+
+abstract class Animal {
+    String name;
+
+    void eat() {
+        System.out.println("Eating");
+    }
+
+    abstract void speak();
+}
+
+Every animal has a name and can eat(), but each animal speak()s differently.
+
+An interface is better when you want unrelated classes to follow the same contract.
+
+
+---------------------------------------------------------------------------
+1. If a class has even one abstract method
+
+Example:
+
+abstract class Animal {
+    abstract void speak();
+}
+
+Then:
+
+Animal a = new Animal();
+
+❌ Not allowed.
+
+The reason is not "because it has one abstract method."
+
+The reason is:
+
+The class itself is declared abstract.
+
+In Java, if a class contains an abstract method, the class must be declared abstract.
+
+2. Is there an abstract variable?
+
+❌ No.
+
+Only these can be abstract:
+
+Classes
+Methods
+
+Fields (variables) cannot be abstract.
+
+
+---------------------------------------------------------------------------
+3. Your quiz
+abstract class Animal {
+    abstract void speak();
+}
+
+class Dog extends Animal {
+
+}
+
+❌ It will NOT compile.
+
+Why?
+
+Dog is a concrete class (not abstract), so it must implement all inherited abstract methods.
+
+You have two options:
+
+class Dog extends Animal {
+    @Override
+    void speak() {
+        System.out.println("Bark");
+    }
+}
+
+or
+
+abstract class Dog extends Animal {
+
+}
+
+because now Dog is also abstract and is allowed to leave speak() unimplemented.
+
+Rule (worth remembering)
+
+If a class extends an abstract class, it must do one of these:
+
+Implement all abstract methods.
+Declare itself abstract.
+
+
+ok now i get it but if it were a public class Animal, with public method speak then it would have compiled . 
+but here as Dog is normal class it acts as a implement thing you need that method in the dog class for compilation. or just make dog abstract class
+
+
+--------------------------------------------------------------------------
+
+Important fact (interview favorite)
+
+Even if you don't write super(), Java inserts it automatically.
+
+So these are equivalent:
+
+Dog() {
+    super();
+    System.out.println("Dog");
+}
+
+and
+
+Dog() {
+    System.out.println("Dog");
+}
+
+The compiler secretly adds super(); as the first statement.
+
+The only time you write it yourself is when the parent has a constructor with parameters:
+
+class Animal {
+    Animal(String name) {}
+}
+
+class Dog extends Animal {
+    Dog() {
+        super("Dog");
+    }
+}
+
+because there is no no-argument constructor to call.
+---------------------------------------------------------------------------
+
+Tiny quiz (last one on super)
+
+What happens here?
+
+class Animal {
+    Animal(String name) {}
+}
+
+class Dog extends Animal {
+    Dog() {
+
+    }
+}
+
+Does it compile?
+
+A. Yes
+
+B. No
+
+Why? (One line.)
+
+No it wont as compiler cannot add super() as super class constructor has a parameter name 
+
+🎯 Perfect. That's exactly right.
+
+Interview answer:
+
+No. The compiler inserts super() only if the parent has a no-argument constructor. Since Animal only has Animal(String name), Dog must explicitly call super("...").
+
+Example:
+
+class Animal {
+    Animal(String name) {}
+}
+
+class Dog extends Animal {
+    Dog() {
+        super("Dog");
+    }
+}
+
+---------------------------------------------------------------------------
+
+
