@@ -8,6 +8,16 @@ const STATIC_NOTES_DIR = path.resolve(PUBLIC_DIR, 'static-notes');
 // Exclude these directories and files
 const EXCLUDE_DIRS = ['.git', 'node_modules', 'notes-viewer', '.DS_Store'];
 
+// First markdown H1 of a note, used as its sidebar label
+function readTitle(filePath) {
+  try {
+    const match = fs.readFileSync(filePath, 'utf-8').match(/^#\s+(.+)$/m);
+    return match ? match[1].trim() : null;
+  } catch (e) {
+    return null;
+  }
+}
+
 // Helper to recursively copy directories/files and list markdown notes
 function buildStaticData(srcDir, destDir, fileList = []) {
   if (!fs.existsSync(destDir)) {
@@ -42,6 +52,7 @@ function buildStaticData(srcDir, destDir, fileList = []) {
         fileList.push({
           name: item,
           path: relativePath,
+          title: readTitle(srcPath),
           size: stat.size,
           mtime: stat.mtime
         });

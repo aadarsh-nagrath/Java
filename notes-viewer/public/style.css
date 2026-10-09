@@ -230,6 +230,24 @@ body {
   transition: transform 0.2s;
 }
 
+.folder-count {
+  margin-left: auto;
+  margin-right: 8px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background-color: var(--bg-tertiary);
+}
+
+.folder-count + .arrow-icon {
+  margin-left: 0;
+}
+
+.tree-file .file-icon {
+  flex-shrink: 0;
+}
+
 .folder-header.collapsed .arrow-icon {
   transform: rotate(-90deg);
 }
@@ -617,6 +635,9 @@ body {
 .icon-finops { color: #22c55e !important; }
 .icon-incident { color: #f97316 !important; }
 .icon-interview { color: #a78bfa !important; }
+.icon-easy { color: #22c55e !important; }
+.icon-medium { color: #f59e0b !important; }
+.icon-hard { color: #ef4444 !important; }
 
 /* Icon zoom transitions */
 .tree-file i, .folder-header i {

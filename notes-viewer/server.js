@@ -9,6 +9,16 @@ const REPO_ROOT = path.resolve(__dirname, '..');
 // Exclude these directories and files
 const EXCLUDE_DIRS = ['.git', 'node_modules', 'notes-viewer', '.DS_Store'];
 
+// First markdown H1 of a note, used as its sidebar label
+function readTitle(filePath) {
+  try {
+    const match = fs.readFileSync(filePath, 'utf-8').match(/^#\s+(.+)$/m);
+    return match ? match[1].trim() : null;
+  } catch (e) {
+    return null;
+  }
+}
+
 // Helper to recursively find markdown files
 function scanDirectory(dir, fileList = []) {
   const files = fs.readdirSync(dir);
@@ -34,6 +44,7 @@ function scanDirectory(dir, fileList = []) {
       fileList.push({
         name: file,
         path: relativePath,
+        title: readTitle(filePath),
         size: stat.size,
         mtime: stat.mtime
       });

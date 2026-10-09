@@ -162,9 +162,32 @@ function setupEventListeners() {
 // Filter notes for search
 function filterNotes(query) {
   const filtered = allNotes.filter(note => {
-    return note.name.toLowerCase().includes(query) || note.path.toLowerCase().includes(query);
+    return note.name.toLowerCase().includes(query) || note.path.toLowerCase().includes(query) ||
+      (note.title || '').toLowerCase().includes(query);
   });
   renderTree(filtered, true); // Auto-expand all during search
+}
+
+// Interview questions show only the easy/medium/hard folders; their README
+// index pages stay loadable through in-note links but are left out of the tree.
+function isHiddenFromTree(file) {
+  return file.path.startsWith('interview-questions/') && file.name.toLowerCase() === 'readme.md';
+}
+
+// Difficulty folders sort by level instead of alphabetically
+const FOLDER_ORDER = { easy: 0, medium: 1, hard: 2 };
+
+function noteLabel(file) {
+  return file.title || file.name.replace(/\.md$/i, '');
+}
+
+function folderLabel(name) {
+  return name.replace(/[-_]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function countFiles(node) {
+  if (node._file) return 1;
+  return Object.values(node).reduce((sum, child) => sum + countFiles(child), 0);
 }
 
 // Parse flat array into Hierarchical Object Tree
@@ -194,7 +217,7 @@ function renderTree(files, autoExpand = false) {
     return;
   }
 
-  const treeData = buildTreeStructure(files);
+  const treeData = buildTreeStructure(files.filter(f => !isHiddenFromTree(f)));
   notesTreeEl.innerHTML = '';
   const fragment = document.createDocumentFragment();
   
@@ -304,6 +327,9 @@ const FOLDER_RULES = [
   [/policy.?as.?code|iac.?testing/, 'fa-solid fa-clipboard-check', 'icon-terraform'],
   [/incident|on.?call/, 'fa-solid fa-bell', 'icon-incident'],
   [/interview/, 'fa-solid fa-user-tie', 'icon-interview'],
+  [/^easy$/, 'fa-solid fa-signal', 'icon-easy'],
+  [/^medium$/, 'fa-solid fa-signal', 'icon-medium'],
+  [/^hard$/, 'fa-solid fa-signal', 'icon-hard'],
   [/backup|disaster/, 'fa-solid fa-life-ring', 'icon-security'],
   [/service.?mesh/, 'fa-solid fa-share-nodes', 'icon-istio'],
   [/^project$/, 'fa-solid fa-diagram-project', 'icon-project'],
@@ -365,6 +391,9 @@ function createTreeNodes(obj, container, autoExpand, parentPath = '') {
     const bIsFile = obj[b]._file !== undefined;
     if (aIsFile && !bIsFile) return 1;
     if (!aIsFile && bIsFile) return -1;
+    const aRank = FOLDER_ORDER[a.toLowerCase()] ?? 99;
+    const bRank = FOLDER_ORDER[b.toLowerCase()] ?? 99;
+    if (aRank !== bRank) return aRank - bRank;
     return a.localeCompare(b);
   });
 
@@ -381,7 +410,7 @@ function createTreeNodes(obj, container, autoExpand, parentPath = '') {
       fileLink.dataset.path = file.path;
       
       const fileIcon = getFileIconClass(file.name, file.path);
-      fileLink.innerHTML = `<i class="${fileIcon} file-icon"></i> <span>${file.name.replace(/\.md$/i, '')}</span>`;
+      fileLink.innerHTML = `<i class="${fileIcon} file-icon"></i> <span>${noteLabel(file)}</span>`;
       
       fileLink.addEventListener('click', (e) => {
         e.preventDefault();
@@ -399,7 +428,8 @@ function createTreeNodes(obj, container, autoExpand, parentPath = '') {
       const folderIcon = getFolderIconClass(key, currentFolderQueryPath);
       folderHeader.innerHTML = `
         <i class="${folderIcon} folder-icon"></i>
-        <span>${key}</span>
+        <span>${folderLabel(key)}</span>
+        <span class="folder-count">${countFiles(node)}</span>
         <i class="fa-solid fa-chevron-down arrow-icon"></i>
       `;
 
@@ -594,9 +624,10 @@ function updateBreadcrumbs(notePath) {
     const span = document.createElement('span');
     if (i === parts.length - 1) {
       span.className = 'active-crumb';
-      span.textContent = part.replace(/\.md$/i, '');
+      const note = allNotes.find(n => n.path === notePath);
+      span.textContent = note ? noteLabel(note) : part.replace(/\.md$/i, '');
     } else {
-      span.textContent = part;
+      span.textContent = folderLabel(part);
     }
     breadcrumbsEl.appendChild(span);
     
