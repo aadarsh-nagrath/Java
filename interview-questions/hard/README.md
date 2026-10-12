@@ -1,4 +1,4 @@
-# Hard — 16 questions
+# Hard — 24 questions
 
 > Java Interview Questions for Experienced (Q181–196). Source: [GeeksforGeeks](https://www.geeksforgeeks.org/java/java-interview-questions/)
 
@@ -20,3 +20,14 @@
 14. [194. What does the JDBC ResultSet interface?](194-what-does-the-jdbc-resultset-interface.md)
 15. [195. What is the JDBC Rowset?](195-what-is-the-jdbc-rowset.md)
 16. [196. What is the role of the JDBC DriverManager class?](196-what-is-the-role-of-the-jdbc-drivermanager-class.md)
+
+## Java 17, Concurrency & Spring
+
+17. [222. Difference between `synchronized` and `ReentrantLock`. What are the trade-offs?](222-difference-between-synchronized-and-reentrantlock-what-are-t.md)
+18. [224. Difference between `volatile` and Atomic classes such as `AtomicInteger` and `AtomicFloat`.](224-difference-between-volatile-and-atomic-classes-such-as-atomi.md)
+19. [225. Explain key `CompletableFuture` methods.](225-explain-key-completablefuture-methods.md)
+20. [226. Difference between sequential and parallel streams. Have you used parallel streams in a production project?](226-difference-between-sequential-and-parallel-streams-have-you.md)
+21. [228. Explain the internal working of the Spring Container.](228-explain-the-internal-working-of-the-spring-container.md)
+22. [236. How does `@Transactional` work?](236-how-does-transactional-work.md)
+23. [239. How have you implemented Spring Security in your project?](239-how-have-you-implemented-spring-security-in-your-project.md)
+24. [240. How did you implement Spring Security across distributed microservices?](240-how-did-you-implement-spring-security-across-distributed-mic.md)

@@ -1,4 +1,4 @@
-# Medium — 40 questions
+# Medium — 55 questions
 
 > Java Intermediate Interview Questions (Q151–180) + Java Difference Interview Questions (Q197–206). Source: [GeeksforGeeks](https://www.geeksforgeeks.org/java/java-interview-questions/)
 
@@ -44,3 +44,21 @@
 38. [204. Differentiate between HashMap and TreeMap.](204-differentiate-between-hashmap-and-treemap.md)
 39. [205. Differentiate between Queue and Deque.](205-differentiate-between-queue-and-deque.md)
 40. [206. Differentiate between HashSet and TreeSet.](206-differentiate-between-hashset-and-treeset.md)
+
+## Java 17, Concurrency & Spring
+
+41. [207. What are the key features introduced in Java 17?](207-what-are-the-key-features-introduced-in-java-17.md)
+42. [210. What is a Record class? How can query results be mapped to Records, and how do you fetch the first record?](210-what-is-a-record-class-how-can-query-results-be-mapped-to-re.md)
+43. [212. What are checked exceptions? Discuss their advantages and disadvantages.](212-what-are-checked-exceptions-discuss-their-advantages-and-dis.md)
+44. [213. What is exception handling? What is `@ControllerAdvice`?](213-what-is-exception-handling-what-is-controlleradvice.md)
+45. [215. Can HashMap keys be mutable? Why or why not?](215-can-hashmap-keys-be-mutable-why-or-why-not.md)
+46. [218. What happens when two interfaces contain identical default methods and a class implements both? How can it be resolved?](218-what-happens-when-two-interfaces-contain-identical-default-m.md)
+47. [219. Explain the SOLID principles.](219-explain-the-solid-principles.md)
+48. [220. Explain the Liskov Substitution Principle. If a subclass can replace its parent, why is inheritance required?](220-explain-the-liskov-substitution-principle-if-a-subclass-can.md)
+49. [221. Explain and implement the Factory Design Pattern with modifications.](221-explain-and-implement-the-factory-design-pattern-with-modifi.md)
+50. [223. What is the `volatile` keyword?](223-what-is-the-volatile-keyword.md)
+51. [227. Difference between `stream` and `flatMap`.](227-difference-between-stream-and-flatmap.md)
+52. [229. Explain the Spring Bean Lifecycle.](229-explain-the-spring-bean-lifecycle.md)
+53. [230. What does `@EnableAutoConfiguration` do?](230-what-does-enableautoconfiguration-do.md)
+54. [237. What are Fetch Types? Explain Lazy vs Eager Loading.](237-what-are-fetch-types-explain-lazy-vs-eager-loading.md)
+55. [238. Explain the fundamentals of Spring Security.](238-explain-the-fundamentals-of-spring-security.md)

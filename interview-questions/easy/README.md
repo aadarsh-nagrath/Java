@@ -1,4 +1,4 @@
-# Easy — 150 questions
+# Easy — 161 questions
 
 > Java Interview Questions for Freshers (Q1–150). Source: [GeeksforGeeks](https://www.geeksforgeeks.org/java/java-interview-questions/)
 
@@ -154,3 +154,17 @@
 148. [148. What is the difference between Iterator and Enumeration?](148-what-is-the-difference-between-iterator-and-enumeration.md)
 149. [149. What is the difference between Comparable and Comparator?](149-what-is-the-difference-between-comparable-and-comparator.md)
 150. [150. What is the difference between Set and Map?](150-what-is-the-difference-between-set-and-map.md)
+
+## Java 17, Concurrency & Spring
+
+151. [208. What is the `var` keyword? Can it be used as a generic type?](208-what-is-the-var-keyword-can-it-be-used-as-a-generic-type.md)
+152. [209. What is an effectively final variable in Java?](209-what-is-an-effectively-final-variable-in-java.md)
+153. [211. What is the Optional class?](211-what-is-the-optional-class.md)
+154. [214. Reverse a string without using predefined methods.](214-reverse-a-string-without-using-predefined-methods.md)
+155. [216. Can we define private methods in an interface?](216-can-we-define-private-methods-in-an-interface.md)
+156. [217. What types of methods can be defined in an interface?](217-what-types-of-methods-can-be-defined-in-an-interface.md)
+157. [231. What is `@Qualifier`? How does it differ from `@Primary`?](231-what-is-qualifier-how-does-it-differ-from-primary.md)
+158. [232. Difference between IoC and Dependency Injection.](232-difference-between-ioc-and-dependency-injection.md)
+159. [233. What is Dependency Injection? Explain its types.](233-what-is-dependency-injection-explain-its-types.md)
+160. [234. What is a Spring Profile, and how have you used it?](234-what-is-a-spring-profile-and-how-have-you-used-it.md)
+161. [235. Difference between Path Variables and Request Parameters.](235-difference-between-path-variables-and-request-parameters.md)
